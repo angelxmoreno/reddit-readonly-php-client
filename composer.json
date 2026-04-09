@@ -1,0 +1,52 @@
+{
+    "name": "amoreno/reddit-readonly-php-client",
+    "description": "PHP client for Reddit's public JSON API",
+    "type": "library",
+    "license": "MIT",
+    "config": {
+        "allow-plugins": {
+            "captainhook/plugin-composer": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Amoreno\\RedditReadonlyPhpClient\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Angel S. Moreno",
+            "email": "angelxmoreno@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "captainhook/captainhook": "^5.25",
+        "captainhook/plugin-composer": "^5.3",
+        "ramsey/conventional-commits": "^1.7"
+    },
+    "extra": {
+        "ramsey/conventional-commits": {
+            "config": {
+                "typeCase": "lower",
+                "types": [
+                    "build",
+                    "chore",
+                    "ci",
+                    "docs",
+                    "feat",
+                    "fix",
+                    "perf",
+                    "refactor",
+                    "revert",
+                    "style",
+                    "test"
+                ],
+                "scopeCase": "kebab",
+                "scopeRequired": false,
+                "descriptionCase": "lower",
+                "descriptionEndMark": ""
+            }
+        }
+    }
+}

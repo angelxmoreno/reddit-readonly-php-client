@@ -1,0 +1,43 @@
+tests/Pest.php
+  344b56a67fbe9225 3-4,31,44
+.gitignore
+  344b56a67fbe9225 3
+tests/TestCase.php
+  344b56a67fbe9225 3-4
+composer.json
+  344b56a67fbe9225 32-35,38-48
+tests/Feature/ExampleTest.php
+  344b56a67fbe9225 3-4
+tests/Unit/ExampleTest.php
+  344b56a67fbe9225 3-4
+captainhook.json
+  344b56a67fbe9225 6,8
+rector.php
+  344b56a67fbe9225 1-19
+README.md
+  344b56a67fbe9225 14-27
+.php-cs-fixer.dist.php
+  344b56a67fbe9225 1-19
+phpstan.neon.dist
+  344b56a67fbe9225 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.6",
+  "base_commit_sha": "754cae9434096d1f915202fffda93f400343aeac",
+  "prompts": {
+    "344b56a67fbe9225": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d6fe0-7791-7a63-9655-e0e18fc56fe6",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Angel S. Moreno",
+      "messages": [],
+      "total_additions": 92,
+      "total_deletions": 8,
+      "accepted_lines": 92,
+      "overriden_lines": 0
+    }
+  }
+}

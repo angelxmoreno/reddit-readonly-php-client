@@ -5,12 +5,18 @@
     "license": "MIT",
     "config": {
         "allow-plugins": {
-            "captainhook/plugin-composer": true
+            "captainhook/plugin-composer": true,
+            "pestphp/pest-plugin": true
         }
     },
     "autoload": {
         "psr-4": {
             "Amoreno\\RedditReadonlyPhpClient\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
         }
     },
     "authors": [
@@ -19,11 +25,14 @@
             "email": "angelxmoreno@gmail.com"
         }
     ],
-    "require": {},
     "require-dev": {
         "captainhook/captainhook": "^5.25",
         "captainhook/plugin-composer": "^5.3",
-        "ramsey/conventional-commits": "^1.7"
+        "ramsey/conventional-commits": "^1.7",
+        "pestphp/pest": "^4.4"
+    },
+    "scripts": {
+        "test": "pest"
     },
     "extra": {
         "ramsey/conventional-commits": {

@@ -11,6 +11,20 @@ Install dependencies to install or refresh hooks locally:
 composer install
 ```
 
+Common tooling commands:
+
+```bash
+composer test
+composer analyse
+composer format
+composer format:check
+composer refactor
+composer refactor:check
+composer check
+```
+
+`composer check` runs the test suite, PHPStan, and PHP CS Fixer in dry-run mode. CaptainHook runs this check on `pre-push`.
+
 Valid commit examples:
 
 ```text

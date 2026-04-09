@@ -3,9 +3,9 @@
         "enabled": true,
         "actions": [
             {
-                "action": "composer test",
+                "action": "composer check",
                 "config": {
-                    "label": "Run test suite"
+                    "label": "Run quality checks"
                 }
             }
         ]

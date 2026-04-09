@@ -1,0 +1,12 @@
+includes:
+    - vendor/pestphp/pest/extension.neon
+
+parameters:
+    level: max
+    paths:
+        - src
+        - tests
+    bootstrapFiles:
+        - vendor/autoload.php
+    scanFiles:
+        - vendor/pestphp/pest/src/Functions.php

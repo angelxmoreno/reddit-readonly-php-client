@@ -1,0 +1,77 @@
+{
+    "name": "amoreno/reddit-readonly-php-client",
+    "description": "PHP client for Reddit's public JSON API",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.5"
+    },
+    "config": {
+        "allow-plugins": {
+            "captainhook/plugin-composer": true,
+            "pestphp/pest-plugin": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Amoreno\\RedditClient\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Angel S. Moreno",
+            "email": "angelxmoreno@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "captainhook/captainhook": "^5.25",
+        "captainhook/plugin-composer": "^5.3",
+        "ramsey/conventional-commits": "^1.7",
+        "pestphp/pest": "^4.4",
+        "phpstan/phpstan": "^2.1",
+        "friendsofphp/php-cs-fixer": "^3.94",
+        "rector/rector": "^2.4"
+    },
+    "scripts": {
+        "test": "pest",
+        "analyse": "phpstan analyse --memory-limit=1G",
+        "format": "php-cs-fixer fix --allow-risky=yes",
+        "format:check": "php-cs-fixer fix --allow-risky=yes --dry-run --diff",
+        "refactor": "rector process",
+        "refactor:check": "rector process --dry-run",
+        "check": [
+            "@test",
+            "@analyse",
+            "@format:check"
+        ]
+    },
+    "extra": {
+        "ramsey/conventional-commits": {
+            "config": {
+                "typeCase": "lower",
+                "types": [
+                    "build",
+                    "chore",
+                    "ci",
+                    "docs",
+                    "feat",
+                    "fix",
+                    "perf",
+                    "refactor",
+                    "revert",
+                    "style",
+                    "test"
+                ],
+                "scopeCase": "kebab",
+                "scopeRequired": false,
+                "descriptionCase": "lower",
+                "descriptionEndMark": ""
+            }
+        }
+    }
+}

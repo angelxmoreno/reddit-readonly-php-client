@@ -3,6 +3,9 @@
     "description": "PHP client for Reddit's public JSON API",
     "type": "library",
     "license": "MIT",
+    "require": {
+        "php": "^8.2"
+    },
     "config": {
         "allow-plugins": {
             "captainhook/plugin-composer": true,

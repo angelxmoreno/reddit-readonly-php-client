@@ -1,0 +1,25 @@
+src/Cache/CacheLayer.php
+  344b56a67fbe9225 36-38,43,56-58,63,73-75,80,90-92,97
+tests/Unit/Cache/CacheLayerTest.php
+  344b56a67fbe9225 38-46,76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.6",
+  "base_commit_sha": "7e7fa882763c2a7e9a654cd8762f1f71bb9f5c76",
+  "prompts": {
+    "344b56a67fbe9225": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d6fe0-7791-7a63-9655-e0e18fc56fe6",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Angel S. Moreno",
+      "messages": [],
+      "total_additions": 26,
+      "total_deletions": 9,
+      "accepted_lines": 26,
+      "overriden_lines": 0
+    }
+  }
+}

@@ -1,0 +1,21 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.6",
+  "base_commit_sha": "8fa624c5d7ab3222f052055fec01983888e6fdd6",
+  "prompts": {
+    "344b56a67fbe9225": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d6fe0-7791-7a63-9655-e0e18fc56fe6",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Angel S. Moreno",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    }
+  }
+}

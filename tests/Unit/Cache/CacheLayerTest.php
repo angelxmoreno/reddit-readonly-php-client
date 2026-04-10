@@ -35,6 +35,15 @@ it('supports custom ttl overrides and cache deletion', function (): void {
         ->and($cache->get('listing:php'))->toBeNull();
 });
 
+it('returns cached null values instead of falling back to the default', function (): void {
+    $store = new InMemoryCacheStore();
+    $cache = new CacheLayer($store, keyPrefix: 'reddit:');
+
+    $cache->set('listing:php', null);
+
+    expect($cache->get('listing:php', 'fallback'))->toBeNull();
+});
+
 it('swallows cache backend failures by default', function (): void {
     $cache = new CacheLayer(new ThrowingCacheStore());
 
@@ -64,7 +73,7 @@ final class InMemoryCacheStore implements CacheInterface
 
     public function get(string $key, mixed $default = null): mixed
     {
-        return $this->items[$key] ?? $default;
+        return array_key_exists($key, $this->items) ? $this->items[$key] : $default;
     }
 
     public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool

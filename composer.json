@@ -40,7 +40,8 @@
         "pestphp/pest": "^4.4",
         "phpstan/phpstan": "^2.1",
         "friendsofphp/php-cs-fixer": "^3.94",
-        "rector/rector": "^2.4"
+        "rector/rector": "^2.4",
+        "nyholm/psr7": "^1.8"
     },
     "scripts": {
         "test": "pest",

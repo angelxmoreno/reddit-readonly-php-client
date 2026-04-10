@@ -20,6 +20,7 @@ This project should be PHP-native, not a line-by-line rewrite of the Node versio
   - `psr/http-message` for PSR-7 messages
   - `psr/http-factory` for PSR-17 request factories
   - `psr/simple-cache` for optional cache support
+- Use `cuyz/valinor` for payload-to-DTO mapping and validation, but keep it behind a small internal mapper layer so the rest of the package is not coupled directly to it.
 - Implement Reddit-specific behavior in this package:
   - request building
   - cache key generation
@@ -50,7 +51,7 @@ Use the Node repo as the behavioral contract:
 - `src/utils/http-client.ts` -> thin Reddit transport over PSR-18
 - `src/rate-limit/rate-limiter.ts` -> in-memory token bucket
 - `src/cache/cache-layer.ts` -> wrapper around PSR-16 cache
-- `src/schemas/*.ts` -> PHP DTOs / validators / normalizers
+- `src/schemas/*.ts` -> PHP DTOs plus internal Valinor-backed mappers / normalizers
 
 Do not copy TypeScript patterns directly if they make PHP awkward. Preserve behavior, not syntax.
 
@@ -58,7 +59,7 @@ Do not copy TypeScript patterns directly if they make PHP awkward. Preserve beha
 
 - Keep new code under `src/` and match the `Amoreno\RedditClient\` namespace.
 - Keep endpoint work incremental. Get subreddit listings working before touching comments or search.
-- Prefer DTOs or clearly defined validated arrays over loose associative arrays everywhere.
+- Keep Valinor at the boundary. Transport should return decoded arrays, mapper services should turn those arrays into DTOs, and public methods should return DTOs instead of raw `stdClass` or loose associative arrays.
 - Make tests prove each layer before stacking the next one.
 - Keep `composer check` green after each ticket.
 

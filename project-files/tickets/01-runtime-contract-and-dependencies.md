@@ -33,10 +33,17 @@ If you skip this step, later code will be built on guesses.
    - `psr/simple-cache`
 
 3. Choose a validation strategy.
-   Pick one and commit to it:
-   - DTOs plus manual validation
-   - a mapper/validator library
-   - Symfony Validator
+   Use `cuyz/valinor` as the package's mapper/validator, but keep it behind your own small abstraction.
+   The goal is:
+   - Reddit transport returns decoded arrays
+   - an internal mapper service uses Valinor to map arrays into DTOs
+   - the rest of the package depends on your DTOs and exceptions, not on Valinor directly
+
+   Why this is the chosen path:
+   - simpler than hand-writing every hydrator
+   - framework-agnostic
+   - gives strong typing without making the public API return raw `stdClass`
+   - still leaves room to replace Valinor later if needed
 
 4. Update `README.md` only if dependency expectations need to be explained now.
 
@@ -44,7 +51,11 @@ If you skip this step, later code will be built on guesses.
 
 - updated `composer.json`
 - updated `composer.lock`
-- a clear note in code or docs about which validation approach the project will use
+- a clear note in code or docs that Valinor is the chosen internal validation/mapping strategy
+
+## Suggested Commit
+
+`chore: define runtime contracts and package dependencies`
 
 ## Done When
 

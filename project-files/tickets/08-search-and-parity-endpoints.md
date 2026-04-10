@@ -27,6 +27,10 @@ Finish the remaining public API so the PHP package reaches parity with the Node 
    - multireddits
 5. Add tests for each endpoint and key query variations.
 
+## Suggested Commit
+
+`feat: add search and parity endpoints`
+
 ## Done When
 
 - the PHP client exposes the same public endpoint surface as the Node version

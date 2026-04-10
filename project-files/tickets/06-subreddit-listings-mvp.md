@@ -26,6 +26,10 @@ These are the simplest endpoints and let you prove transport, validation, cache,
 6. Validate the response before returning it.
 7. Write unit tests with mocked HTTP responses.
 
+## Suggested Commit
+
+`feat: add subreddit listing endpoints`
+
 ## Done When
 
 - you can fetch a subreddit listing

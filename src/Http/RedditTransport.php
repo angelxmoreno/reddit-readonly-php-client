@@ -9,10 +9,10 @@ use Amoreno\RedditClient\Exception\NetworkError;
 use Amoreno\RedditClient\Exception\RedditApiError;
 use Amoreno\RedditClient\Exception\ValidationError;
 use JsonException;
+use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
-use Throwable;
 
 final readonly class RedditTransport
 {
@@ -35,7 +35,7 @@ final readonly class RedditTransport
                 ->withHeader('Accept', 'application/json');
 
             $response = $this->httpClient->sendRequest($request);
-        } catch (Throwable $exception) {
+        } catch (ClientExceptionInterface $exception) {
             throw new NetworkError(
                 sprintf('Failed to send Reddit request to "%s".', $url),
                 previous: $exception,

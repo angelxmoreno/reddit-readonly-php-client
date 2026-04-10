@@ -84,6 +84,24 @@ it('wraps transport failures as network errors', function (): void {
         ->toThrow(NetworkError::class, 'Failed to send Reddit request');
 });
 
+it('does not mask request factory failures as network errors', function (): void {
+    $transport = new RedditTransport(
+        new FakeHttpClient(
+            new Response(200, ['Content-Type' => 'application/json'], '{"kind":"Listing"}'),
+        ),
+        new class () implements \Psr\Http\Message\RequestFactoryInterface {
+            public function createRequest(string $method, $uri): RequestInterface
+            {
+                throw new RuntimeException('bad request factory');
+            }
+        },
+        new RedditClientConfig(userAgent: 'test-agent'),
+    );
+
+    expect(fn (): array => $transport->get('https://www.reddit.com/r/php.json'))
+        ->toThrow(RuntimeException::class, 'bad request factory');
+});
+
 final class FakeHttpClient implements ClientInterface
 {
     public ?RequestInterface $lastRequest = null;

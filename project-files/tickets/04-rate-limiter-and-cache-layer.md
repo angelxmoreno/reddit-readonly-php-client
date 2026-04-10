@@ -35,6 +35,10 @@ This ticket depends on the shared config/exception types from ticket 02.
 - cache wrapper class
 - unit tests for both
 
+## Suggested Commit
+
+`feat: add rate limiter and cache layer`
+
 ## Done When
 
 - repeated calls can hit cache

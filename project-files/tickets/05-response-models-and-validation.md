@@ -11,7 +11,8 @@ This is the largest modeling task in the whole project. Keep it isolated before 
 ## PHP Refresher
 
 - DTOs make PHP code easier to navigate than raw nested arrays.
-- If you do use arrays internally, keep the validated boundary explicit and predictable.
+- Arrays are still fine at the transport boundary. The important part is that they stop there and get mapped into DTOs through one internal validation layer.
+- Valinor should be treated as an internal implementation detail, not something exposed in the public API.
 
 ## Port Order
 
@@ -32,12 +33,17 @@ This is the largest modeling task in the whole project. Keep it isolated before 
 ## Tasks
 
 1. Create schema/DTO classes under `src/Schema/` or `src/Dto/`.
-2. Build validation/normalization code for each shape.
-3. Add tests for:
+2. Build one reusable internal mapper service around Valinor.
+3. Build validation/normalization code for each shape on top of that mapper service.
+4. Add tests for:
    - minimal valid payloads
    - mixed listing payloads
    - invalid kind values
    - missing required fields
+
+## Suggested Commit
+
+`feat: add response models and validation mapping`
 
 ## Done When
 

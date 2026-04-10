@@ -45,6 +45,10 @@ Transport, caching, validation, and the client all need stable contracts.
 - config/value classes committed
 - exception hierarchy committed
 
+## Suggested Commit
+
+`feat: add core client types and exception hierarchy`
+
 ## Done When
 
 - autoloading works for all new classes

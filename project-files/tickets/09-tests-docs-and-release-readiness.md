@@ -31,6 +31,10 @@ Finish the package so it is understandable, testable, and ready to publish.
 - live search returning subreddit/user kinds
 - live comment retrieval
 
+## Suggested Commit
+
+`chore: finalize docs tests and release checks`
+
 ## Done When
 
 - local quality checks pass

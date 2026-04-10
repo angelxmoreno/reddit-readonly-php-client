@@ -32,6 +32,10 @@ The main client should not know how to create requests, attach headers, or decod
 - transport class
 - focused unit tests for request creation, status handling, and JSON decoding
 
+## Suggested Commit
+
+`feat(http): add psr-18 reddit transport`
+
 ## Done When
 
 - you can hand the transport a URL and get validated decoded JSON or a predictable exception

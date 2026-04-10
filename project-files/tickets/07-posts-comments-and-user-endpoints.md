@@ -33,6 +33,10 @@ This ticket assumes:
    - user profile
    - user overview/submitted/comments feeds
 
+## Suggested Commit
+
+`feat: add post comment and user endpoints`
+
 ## Done When
 
 - all listed methods work with mocked responses

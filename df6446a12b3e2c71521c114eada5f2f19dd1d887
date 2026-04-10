@@ -1,0 +1,59 @@
+src/Config/SearchOptions.php
+  344b56a67fbe9225 1-28
+tests/Unit/CoreTypesTest.php
+  344b56a67fbe9225 1-59
+src/Config/PaginationOptions.php
+  344b56a67fbe9225 1-29
+src/RateLimit/.gitkeep
+  344b56a67fbe9225 1
+src/Enum/SortType.php
+  344b56a67fbe9225 1-13
+src/Enum/CommentSort.php
+  344b56a67fbe9225 1-16
+src/Enum/TopTimeRange.php
+  344b56a67fbe9225 1-15
+src/Http/.gitkeep
+  344b56a67fbe9225 1
+src/Exception/NetworkError.php
+  344b56a67fbe9225 1-9
+src/Cache/.gitkeep
+  344b56a67fbe9225 1
+src/Exception/RedditApiError.php
+  344b56a67fbe9225 1-9
+src/Exception/ValidationError.php
+  344b56a67fbe9225 1-9
+src/Exception/RedditClientException.php
+  344b56a67fbe9225 1-11
+src/Enum/SearchSort.php
+  344b56a67fbe9225 1-14
+src/Exception/CacheError.php
+  344b56a67fbe9225 1-9
+src/Client/RedditClient.php
+  344b56a67fbe9225 5,7
+src/Exception/RateLimitError.php
+  344b56a67fbe9225 1-9
+src/Config/RedditClientConfig.php
+  344b56a67fbe9225 1-43
+src/Config/CommentOptions.php
+  344b56a67fbe9225 1-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.6",
+  "base_commit_sha": "df6446a12b3e2c71521c114eada5f2f19dd1d887",
+  "prompts": {
+    "344b56a67fbe9225": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d6fe0-7791-7a63-9655-e0e18fc56fe6",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Angel S. Moreno",
+      "messages": [],
+      "total_additions": 316,
+      "total_deletions": 9,
+      "accepted_lines": 316,
+      "overriden_lines": 0
+    }
+  }
+}

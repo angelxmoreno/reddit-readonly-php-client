@@ -33,12 +33,14 @@ final readonly class CacheLayer
 
     public function get(string $key, mixed $default = null): mixed
     {
-        if (!$this->isEnabled()) {
+        $cache = $this->cache;
+
+        if (!$this->enabled || $cache === null) {
             return $default;
         }
 
         try {
-            return $this->cache?->get($this->prefixKey($key), $default) ?? $default;
+            return $cache->get($this->prefixKey($key), $default);
         } catch (Throwable $exception) {
             $this->handleCacheError('get', $key, $exception);
 
@@ -51,12 +53,14 @@ final readonly class CacheLayer
      */
     public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
     {
-        if (!$this->isEnabled()) {
+        $cache = $this->cache;
+
+        if (!$this->enabled || $cache === null) {
             return false;
         }
 
         try {
-            return $this->cache?->set($this->prefixKey($key), $value, $ttl ?? $this->ttl) ?? false;
+            return $cache->set($this->prefixKey($key), $value, $ttl ?? $this->ttl);
         } catch (Throwable $exception) {
             $this->handleCacheError('set', $key, $exception);
 
@@ -66,12 +70,14 @@ final readonly class CacheLayer
 
     public function delete(string $key): bool
     {
-        if (!$this->isEnabled()) {
+        $cache = $this->cache;
+
+        if (!$this->enabled || $cache === null) {
             return false;
         }
 
         try {
-            return $this->cache?->delete($this->prefixKey($key)) ?? false;
+            return $cache->delete($this->prefixKey($key));
         } catch (Throwable $exception) {
             $this->handleCacheError('delete', $key, $exception);
 
@@ -81,12 +87,14 @@ final readonly class CacheLayer
 
     public function clear(): bool
     {
-        if (!$this->isEnabled()) {
+        $cache = $this->cache;
+
+        if (!$this->enabled || $cache === null) {
             return false;
         }
 
         try {
-            return $this->cache?->clear() ?? false;
+            return $cache->clear();
         } catch (Throwable $exception) {
             $this->handleCacheError('clear', '*', $exception);
 

@@ -1,0 +1,53 @@
+src/Dto/User/SearchResults.php
+  344b56a67fbe9225 1-24
+src/Dto/Common/Flair.php
+  344b56a67fbe9225 1-17
+src/Dto/Post/Post.php
+  344b56a67fbe9225 1-43
+src/Dto/User/UserContentListing.php
+  344b56a67fbe9225 1-23
+src/Dto/Comment/MoreComments.php
+  344b56a67fbe9225 1-21
+src/Dto/Subreddit/Subreddit.php
+  344b56a67fbe9225 1-28
+src/Dto/Comment/CommentListing.php
+  344b56a67fbe9225 1-20
+src/Dto/Post/PostWithComments.php
+  344b56a67fbe9225 1-16
+src/Dto/User/UserSummary.php
+  344b56a67fbe9225 1-50
+src/Dto/User/UserProfileSubreddit.php
+  344b56a67fbe9225 1-31
+src/Dto/Post/PostListing.php
+  344b56a67fbe9225 1-21
+src/Enum/ThingKind.php
+  344b56a67fbe9225 1-15
+src/Mapping/RedditPayloadMapper.php
+  344b56a67fbe9225 1-344
+src/Dto/Comment/Comment.php
+  344b56a67fbe9225 1-37
+src/Dto/User/UserProfile.php
+  344b56a67fbe9225 1-53
+tests/Unit/Mapping/RedditPayloadMapperTest.php
+  344b56a67fbe9225 1-439
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.6",
+  "base_commit_sha": "c73267257dff197f4b6f33dc2136e49e8f098e4c",
+  "prompts": {
+    "344b56a67fbe9225": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d6fe0-7791-7a63-9655-e0e18fc56fe6",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Angel S. Moreno",
+      "messages": [],
+      "total_additions": 1182,
+      "total_deletions": 0,
+      "accepted_lines": 1182,
+      "overriden_lines": 0
+    }
+  }
+}

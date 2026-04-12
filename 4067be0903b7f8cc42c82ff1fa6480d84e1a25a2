@@ -1,0 +1,35 @@
+AGENTS.md
+  344b56a67fbe9225 29-38
+src/Client/RedditClient.php
+  344b56a67fbe9225 7-20,22-206
+tests/Unit/CoreTypesTest.php
+  344b56a67fbe9225 21
+tests/Unit/Client/RedditClientTest.php
+  344b56a67fbe9225 1-237
+README.md
+  344b56a67fbe9225 70-71,78-82
+project-files/tickets/06-subreddit-listings-mvp.md
+  344b56a67fbe9225 13-17
+project-files/tickets/07-posts-comments-and-user-endpoints.md
+  344b56a67fbe9225 1,5,9,27-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "4067be0903b7f8cc42c82ff1fa6480d84e1a25a2",
+  "prompts": {
+    "344b56a67fbe9225": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d6fe0-7791-7a63-9655-e0e18fc56fe6",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Angel S. Moreno",
+      "messages": [],
+      "total_additions": 537,
+      "total_deletions": 90,
+      "accepted_lines": 469,
+      "overriden_lines": 0
+    }
+  }
+}

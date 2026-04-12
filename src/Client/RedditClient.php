@@ -90,8 +90,9 @@ final readonly class RedditClient
         ?TopTimeRange $timeRange = null,
     ): PostListing {
         $normalizedSubreddit = $this->normalizeSubredditName($subreddit);
+        $encodedSubreddit = rawurlencode($normalizedSubreddit);
         $query = $this->buildListingQuery($options, $timeRange);
-        $path = sprintf('/r/%s/%s.json', $normalizedSubreddit, $sort);
+        $path = sprintf('/r/%s/%s.json', $encodedSubreddit, $sort);
         $cacheKey = $this->buildCacheKey($path, $query);
 
         $cached = $this->cache->get($cacheKey);

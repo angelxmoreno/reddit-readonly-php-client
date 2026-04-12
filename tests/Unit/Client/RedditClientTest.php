@@ -101,6 +101,23 @@ it('rejects empty subreddit names', function (): void {
         ->toThrow(InvalidArgumentException::class, 'The subreddit name cannot be empty.');
 });
 
+it('encodes reserved characters in subreddit path segments', function (): void {
+    $httpClient = new RecordingHttpClient(
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalPostListingPayload(), JSON_THROW_ON_ERROR)),
+    );
+    $client = new RedditClient(
+        $httpClient,
+        new Psr17Factory(),
+        null,
+        new RedditClientConfig(userAgent: 'test-agent'),
+    );
+
+    $client->getSubredditPosts('space test');
+
+    expect((string) $httpClient->lastRequest?->getUri())
+        ->toBe('https://www.reddit.com/r/space%20test/hot.json?limit=25');
+});
+
 /**
  * @return array<string, mixed>
  */

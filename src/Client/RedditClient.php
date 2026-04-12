@@ -5,9 +5,16 @@ declare(strict_types=1);
 namespace Amoreno\RedditClient\Client;
 
 use Amoreno\RedditClient\Cache\CacheLayer;
+use Amoreno\RedditClient\Config\CommentOptions;
 use Amoreno\RedditClient\Config\PaginationOptions;
 use Amoreno\RedditClient\Config\RedditClientConfig;
+use Amoreno\RedditClient\Dto\Comment\CommentListing;
+use Amoreno\RedditClient\Dto\Post\Post;
 use Amoreno\RedditClient\Dto\Post\PostListing;
+use Amoreno\RedditClient\Dto\Post\PostWithComments;
+use Amoreno\RedditClient\Dto\Subreddit\Subreddit;
+use Amoreno\RedditClient\Dto\User\UserContentListing;
+use Amoreno\RedditClient\Dto\User\UserProfile;
 use Amoreno\RedditClient\Enum\TopTimeRange;
 use Amoreno\RedditClient\Http\RedditTransport;
 use Amoreno\RedditClient\Mapping\RedditPayloadMapper;
@@ -83,6 +90,86 @@ final readonly class RedditClient
         return $this->fetchSubredditListing($name, 'rising', $options);
     }
 
+    public function getSubredditDetails(string $name): Subreddit
+    {
+        $normalizedSubreddit = $this->normalizeSubredditName($name);
+        $encodedSubreddit = rawurlencode($normalizedSubreddit);
+        $path = sprintf('/r/%s/about.json', $encodedSubreddit);
+        $cacheKey = $this->buildCacheKey($path, []);
+
+        $cached = $this->cache->get($cacheKey);
+
+        if ($cached instanceof Subreddit) {
+            return $cached;
+        }
+
+        $this->rateLimiter->waitForToken();
+
+        $payload = $this->transport->get($this->buildUrl($path, []));
+        $subreddit = $this->mapper->mapSubreddit($this->expectAssociativePayload($payload));
+
+        $this->cache->set($cacheKey, $subreddit);
+
+        return $subreddit;
+    }
+
+    public function getPost(string $subreddit, string $postId, ?string $title = null): Post
+    {
+        return $this->fetchPostWithComments($subreddit, $postId, $title)->post;
+    }
+
+    public function getComments(
+        string $subreddit,
+        string $postId,
+        ?string $title = null,
+        ?CommentOptions $options = null,
+    ): CommentListing {
+        return $this->fetchPostWithComments(
+            $subreddit,
+            $postId,
+            $title,
+            $this->buildCommentQuery($options),
+        )->comments;
+    }
+
+    public function getUserOverview(string $username, ?PaginationOptions $options = null): UserContentListing
+    {
+        return $this->fetchUserContentListing($username, 'overview', $options);
+    }
+
+    public function getUserSubmitted(string $username, ?PaginationOptions $options = null): UserContentListing
+    {
+        return $this->fetchUserContentListing($username, 'submitted', $options);
+    }
+
+    public function getUserComments(string $username, ?PaginationOptions $options = null): UserContentListing
+    {
+        return $this->fetchUserContentListing($username, 'comments', $options);
+    }
+
+    public function getUserProfile(string $username): UserProfile
+    {
+        $normalizedUsername = $this->normalizeUsername($username);
+        $encodedUsername = rawurlencode($normalizedUsername);
+        $path = sprintf('/user/%s/about.json', $encodedUsername);
+        $cacheKey = $this->buildCacheKey($path, []);
+
+        $cached = $this->cache->get($cacheKey);
+
+        if ($cached instanceof UserProfile) {
+            return $cached;
+        }
+
+        $this->rateLimiter->waitForToken();
+
+        $payload = $this->transport->get($this->buildUrl($path, []));
+        $profile = $this->mapper->mapUserProfile($this->expectAssociativePayload($payload));
+
+        $this->cache->set($cacheKey, $profile);
+
+        return $profile;
+    }
+
     private function fetchSubredditListing(
         string $subreddit,
         string $sort,
@@ -112,9 +199,88 @@ final readonly class RedditClient
     }
 
     /**
+     * @param array<string, scalar> $query
+     */
+    private function fetchPostWithComments(
+        string $subreddit,
+        string $postId,
+        ?string $title = null,
+        array $query = [],
+    ): PostWithComments {
+        $normalizedSubreddit = $this->normalizeSubredditName($subreddit);
+        $normalizedPostId = $this->normalizePostId($postId);
+        $encodedSubreddit = rawurlencode($normalizedSubreddit);
+        $encodedPostId = rawurlencode($normalizedPostId);
+        $path = sprintf('/r/%s/comments/%s', $encodedSubreddit, $encodedPostId);
+
+        if ($title !== null && trim($title) !== '') {
+            $path .= '/' . rawurlencode(trim($title, '/'));
+        }
+
+        $path .= '.json';
+
+        $cacheKey = $this->buildCacheKey($path, $query);
+        $cached = $this->cache->get($cacheKey);
+
+        if ($cached instanceof PostWithComments) {
+            return $cached;
+        }
+
+        $this->rateLimiter->waitForToken();
+
+        $payload = $this->transport->get($this->buildUrl($path, $query));
+        $postWithComments = $this->mapper->mapPostWithComments($this->expectListPayload($payload));
+
+        $this->cache->set($cacheKey, $postWithComments);
+
+        return $postWithComments;
+    }
+
+    private function fetchUserContentListing(
+        string $username,
+        string $listingType,
+        ?PaginationOptions $options = null,
+    ): UserContentListing {
+        $normalizedUsername = $this->normalizeUsername($username);
+        $encodedUsername = rawurlencode($normalizedUsername);
+        $query = $this->buildPaginationQuery($options);
+        $path = sprintf('/user/%s/%s.json', $encodedUsername, $listingType);
+        $cacheKey = $this->buildCacheKey($path, $query);
+
+        $cached = $this->cache->get($cacheKey);
+
+        if ($cached instanceof UserContentListing) {
+            return $cached;
+        }
+
+        $this->rateLimiter->waitForToken();
+
+        $payload = $this->transport->get($this->buildUrl($path, $query));
+        $listing = $this->mapper->mapUserContentListing($this->expectAssociativePayload($payload));
+
+        $this->cache->set($cacheKey, $listing);
+
+        return $listing;
+    }
+
+    /**
      * @return array<string, scalar>
      */
     private function buildListingQuery(?PaginationOptions $options, ?TopTimeRange $timeRange = null): array
+    {
+        $query = $this->buildPaginationQuery($options);
+
+        if ($timeRange !== null) {
+            $query['t'] = $timeRange->value;
+        }
+
+        return $query;
+    }
+
+    /**
+     * @return array<string, scalar>
+     */
+    private function buildPaginationQuery(?PaginationOptions $options): array
     {
         $options ??= new PaginationOptions();
 
@@ -134,9 +300,33 @@ final readonly class RedditClient
 
         $query['limit'] = $options->limit;
 
-        if ($timeRange !== null) {
-            $query['t'] = $timeRange->value;
+        return $query;
+    }
+
+    /**
+     * @return array<string, scalar>
+     */
+    private function buildCommentQuery(?CommentOptions $options): array
+    {
+        $options ??= new CommentOptions();
+
+        $query = [];
+
+        if ($options->after !== null) {
+            $query['after'] = $options->after;
         }
+
+        if ($options->before !== null) {
+            $query['before'] = $options->before;
+        }
+
+        $query['limit'] = $options->limit;
+
+        if ($options->depth !== null) {
+            $query['depth'] = $options->depth;
+        }
+
+        $query['sort'] = $options->sort->value;
 
         return $query;
     }
@@ -186,6 +376,34 @@ final readonly class RedditClient
         return $normalized;
     }
 
+    private function normalizeUsername(string $username): string
+    {
+        $normalized = trim($username);
+        $normalized = trim($normalized, '/');
+
+        if (str_starts_with($normalized, 'u/')) {
+            $normalized = substr($normalized, 2);
+        }
+
+        if ($normalized === '') {
+            throw new InvalidArgumentException('The username cannot be empty.');
+        }
+
+        return $normalized;
+    }
+
+    private function normalizePostId(string $postId): string
+    {
+        $normalized = trim($postId);
+        $normalized = trim($normalized, '/');
+
+        if ($normalized === '') {
+            throw new InvalidArgumentException('The post ID cannot be empty.');
+        }
+
+        return $normalized;
+    }
+
     /**
      * @param array<mixed, mixed> $payload
      *
@@ -201,6 +419,24 @@ final readonly class RedditClient
             }
 
             $normalized[$key] = $value;
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * @param array<mixed, mixed> $payload
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function expectListPayload(array $payload): array
+    {
+        $normalized = [];
+
+        foreach ($payload as $item) {
+            $normalized[] = $this->expectAssociativePayload(
+                is_array($item) ? $item : throw new InvalidArgumentException('Expected a Reddit payload list.'),
+            );
         }
 
         return $normalized;

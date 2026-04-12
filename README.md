@@ -75,6 +75,7 @@ echo $listing->children[0]->title . PHP_EOL;
 
 ### Subreddits
 
+- `getSubredditDetails(string $name)`
 - `getSubredditPosts(string $name, PaginationOptions $options = null)`
 - `getHotSubredditPosts(string $name, PaginationOptions $options = null)`
 - `getNewSubredditPosts(string $name, PaginationOptions $options = null)`

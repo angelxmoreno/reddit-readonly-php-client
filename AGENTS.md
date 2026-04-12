@@ -26,4 +26,13 @@ Pest is the test framework, configured through `phpunit.xml` and `tests/Pest.php
 
 ## Commit & Pull Request Guidelines
 
-Commits follow Conventional Commits and are enforced by CaptainHook on `commit-msg`. Recent history shows patterns like `feat: renamed namespace`, `chore: add php quality tooling`, and `ci: added ci tests`. Keep the first line lowercase and in `type: description` form; optional bodies should follow a blank line. For pull requests, ensure CI passes on the branch head and describe any runtime, namespace, or tooling changes clearly.
+Commits follow Conventional Commits and are enforced by CaptainHook on `commit-msg`. Recent history shows patterns like `feat: renamed namespace`, `chore: add php quality tooling`, and `ci: added ci tests`. Keep the first line lowercase and in `type: description` form; optional bodies should follow a blank line.
+
+Do not commit work before the user reviews it and explicitly asks for a commit. The expected flow in this repo is:
+
+- make the code or documentation changes
+- run the relevant checks
+- present the diff or affected files for review
+- commit only after the user approves
+
+For pull requests, ensure CI passes on the branch head and describe any runtime, namespace, or tooling changes clearly.

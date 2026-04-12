@@ -1,11 +1,12 @@
-# 07 Posts Comments And User Endpoints
+# 07 Detail Posts Comments And User Endpoints
 
 ## Goal
 
-Expand the client beyond listing endpoints into post, comment, and user APIs.
+Expand the client beyond listing endpoints into detail, post, comment, and user APIs.
 
 ## Methods To Implement
 
+- `getSubredditDetails`
 - `getPost`
 - `getComments`
 - `getUserOverview`
@@ -23,11 +24,13 @@ This ticket assumes:
 
 ## Tasks
 
-1. Implement post/comment URL building.
-2. Support optional post slug handling for comment-page URLs.
-3. Parse the tuple returned by Reddit comment-page endpoints.
-4. Implement shared helper methods for user content endpoints.
-5. Add unit tests for:
+1. Implement subreddit detail URL building for `/r/{subreddit}/about.json`.
+2. Implement post/comment URL building.
+3. Support optional post slug handling for comment-page URLs.
+4. Parse the tuple returned by Reddit comment-page endpoints.
+5. Implement shared helper methods for user content endpoints.
+6. Add unit tests for:
+   - subreddit details
    - comment listing retrieval
    - post-with-comments retrieval
    - user profile

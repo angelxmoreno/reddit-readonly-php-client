@@ -15,7 +15,7 @@ use Psr\SimpleCache\CacheInterface;
 
 it('fetches the default subreddit listing using the hot endpoint', function (): void {
     $httpClient = new RecordingHttpClient(
-        new Response(200, ['Content-Type' => 'application/json'], json_encode(minimalPostListingPayload(), JSON_THROW_ON_ERROR)),
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalPostListingPayload(), JSON_THROW_ON_ERROR)),
     );
     $client = new RedditClient(
         $httpClient,
@@ -34,7 +34,7 @@ it('fetches the default subreddit listing using the hot endpoint', function (): 
 
 it('builds deterministic query strings for paginated subreddit listings', function (): void {
     $httpClient = new RecordingHttpClient(
-        new Response(200, ['Content-Type' => 'application/json'], json_encode(minimalPostListingPayload(), JSON_THROW_ON_ERROR)),
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalPostListingPayload(), JSON_THROW_ON_ERROR)),
     );
     $client = new RedditClient(
         $httpClient,
@@ -51,7 +51,7 @@ it('builds deterministic query strings for paginated subreddit listings', functi
 
 it('adds the time range when fetching top subreddit listings', function (): void {
     $httpClient = new RecordingHttpClient(
-        new Response(200, ['Content-Type' => 'application/json'], json_encode(minimalPostListingPayload(), JSON_THROW_ON_ERROR)),
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalPostListingPayload(), JSON_THROW_ON_ERROR)),
     );
     $client = new RedditClient(
         $httpClient,
@@ -68,7 +68,7 @@ it('adds the time range when fetching top subreddit listings', function (): void
 
 it('uses cached subreddit listings before hitting the transport', function (): void {
     $httpClient = new RecordingHttpClient(
-        new Response(200, ['Content-Type' => 'application/json'], json_encode(minimalPostListingPayload(), JSON_THROW_ON_ERROR)),
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalPostListingPayload(), JSON_THROW_ON_ERROR)),
     );
     $cache = new InMemoryClientCache();
     $client = new RedditClient(
@@ -88,7 +88,7 @@ it('uses cached subreddit listings before hitting the transport', function (): v
 
 it('rejects empty subreddit names', function (): void {
     $httpClient = new RecordingHttpClient(
-        new Response(200, ['Content-Type' => 'application/json'], json_encode(minimalPostListingPayload(), JSON_THROW_ON_ERROR)),
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalPostListingPayload(), JSON_THROW_ON_ERROR)),
     );
     $client = new RedditClient(
         $httpClient,
@@ -104,7 +104,7 @@ it('rejects empty subreddit names', function (): void {
 /**
  * @return array<string, mixed>
  */
-function minimalPostThingPayload(): array
+function clientMinimalPostThingPayload(): array
 {
     return [
         'kind' => 't3',
@@ -129,14 +129,14 @@ function minimalPostThingPayload(): array
 /**
  * @return array<string, mixed>
  */
-function minimalPostListingPayload(): array
+function clientMinimalPostListingPayload(): array
 {
     return [
         'kind' => 'Listing',
         'data' => [
             'modhash' => null,
             'dist' => 1,
-            'children' => [minimalPostThingPayload()],
+            'children' => [clientMinimalPostThingPayload()],
             'after' => null,
             'before' => null,
         ],

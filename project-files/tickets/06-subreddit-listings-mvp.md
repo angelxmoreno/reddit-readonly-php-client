@@ -10,11 +10,11 @@ These are the simplest endpoints and let you prove transport, validation, cache,
 
 ## Methods To Implement
 
-- `getSubreddit`
-- `getSubredditHot`
-- `getSubredditNew`
-- `getSubredditTop`
-- `getSubredditRising`
+- `getSubredditPosts`
+- `getHotSubredditPosts`
+- `getNewSubredditPosts`
+- `getTopSubredditPosts`
+- `getRisingSubredditPosts`
 
 ## Tasks
 

@@ -18,7 +18,7 @@ use Amoreno\RedditClient\Exception\RedditApiError;
 use Amoreno\RedditClient\Exception\ValidationError;
 
 it('autoloads the public client entry point', function (): void {
-    expect(new RedditClient())->toBeInstanceOf(RedditClient::class);
+    expect(class_exists(RedditClient::class))->toBeTrue();
 });
 
 it('provides default client config values', function (): void {

@@ -67,19 +67,19 @@ $redditClient = new RedditClient(
     )
 );
 
-$listing = $redditClient->getSubreddit('php');
-echo $listing->data->children[0]->data->title . PHP_EOL;
+$listing = $redditClient->getSubredditPosts('php');
+echo $listing->children[0]->title . PHP_EOL;
 ```
 
 ## Intended Public API
 
 ### Subreddits
 
-- `getSubreddit(string $name, PaginationOptions $options = null)`
-- `getSubredditHot(string $name, PaginationOptions $options = null)`
-- `getSubredditNew(string $name, PaginationOptions $options = null)`
-- `getSubredditTop(string $name, TopTimeRange $timeRange = TopTimeRange::Day, PaginationOptions $options = null)`
-- `getSubredditRising(string $name, PaginationOptions $options = null)`
+- `getSubredditPosts(string $name, PaginationOptions $options = null)`
+- `getHotSubredditPosts(string $name, PaginationOptions $options = null)`
+- `getNewSubredditPosts(string $name, PaginationOptions $options = null)`
+- `getTopSubredditPosts(string $name, TopTimeRange $timeRange = TopTimeRange::Day, PaginationOptions $options = null)`
+- `getRisingSubredditPosts(string $name, PaginationOptions $options = null)`
 - `getPopular(SortType $sort = SortType::Hot, PaginationOptions $options = null)`
 - `getAll(SortType $sort = SortType::Hot, PaginationOptions $options = null)`
 - `getMultireddit(string $user, string $multiName, PaginationOptions $options = null)`

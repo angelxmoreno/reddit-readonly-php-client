@@ -1,0 +1,27 @@
+README.md
+  344b56a67fbe9225 78
+tests/Unit/Client/RedditClientTest.php
+  344b56a67fbe9225 6,9,123-284,323-479
+src/Client/RedditClient.php
+  344b56a67fbe9225 8,11-12,14-17,93-172,201-265,270-283,303-316,319-330,379-406,426-443
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "bc09dd6cd30bc0f16b0184d364f1d0082f1b4939",
+  "prompts": {
+    "344b56a67fbe9225": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d6fe0-7791-7a63-9655-e0e18fc56fe6",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Angel S. Moreno",
+      "messages": [],
+      "total_additions": 62,
+      "total_deletions": 5,
+      "accepted_lines": 792,
+      "overriden_lines": 0
+    }
+  }
+}

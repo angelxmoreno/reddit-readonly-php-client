@@ -6,7 +6,10 @@ use Amoreno\RedditClient\Client\RedditClient;
 use Amoreno\RedditClient\Config\CommentOptions;
 use Amoreno\RedditClient\Config\PaginationOptions;
 use Amoreno\RedditClient\Config\RedditClientConfig;
+use Amoreno\RedditClient\Config\SearchOptions;
 use Amoreno\RedditClient\Enum\CommentSort;
+use Amoreno\RedditClient\Enum\SearchSort;
+use Amoreno\RedditClient\Enum\SortType;
 use Amoreno\RedditClient\Enum\TopTimeRange;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;
@@ -282,6 +285,131 @@ it('encodes reserved characters in user endpoint path segments', function (): vo
         ->toBe('https://www.reddit.com/user/angel%20test/about.json');
 });
 
+it('fetches global search results with deterministic query params', function (): void {
+    $httpClient = new RecordingHttpClient(
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalSearchResultsPayload(), JSON_THROW_ON_ERROR)),
+    );
+    $client = new RedditClient(
+        $httpClient,
+        new Psr17Factory(),
+        null,
+        new RedditClientConfig(userAgent: 'test-agent'),
+    );
+
+    $results = $client->search(
+        'react native',
+        new SearchOptions(
+            sort: SearchSort::Top,
+            timeRange: TopTimeRange::Week,
+            after: 't3_abc123',
+            limit: 10,
+        ),
+    );
+
+    expect($results->children)->toHaveCount(4)
+        ->and((string) $httpClient->lastRequest?->getUri())
+            ->toBe('https://www.reddit.com/search.json?q=react%20native&after=t3_abc123&limit=10&sort=top&t=week');
+});
+
+it('fetches subreddit scoped search results', function (): void {
+    $httpClient = new RecordingHttpClient(
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalSearchResultsPayload(), JSON_THROW_ON_ERROR)),
+    );
+    $client = new RedditClient(
+        $httpClient,
+        new Psr17Factory(),
+        null,
+        new RedditClientConfig(userAgent: 'test-agent'),
+    );
+
+    $client->searchSubreddit('r/php', 'react hooks');
+
+    expect((string) $httpClient->lastRequest?->getUri())
+        ->toBe('https://www.reddit.com/r/php/search.json?q=react%20hooks&restrict_sr=1&limit=25&sort=relevance&t=all');
+});
+
+it('rejects empty search queries', function (): void {
+    $httpClient = new RecordingHttpClient(
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalSearchResultsPayload(), JSON_THROW_ON_ERROR)),
+    );
+    $client = new RedditClient(
+        $httpClient,
+        new Psr17Factory(),
+        null,
+        new RedditClientConfig(userAgent: 'test-agent'),
+    );
+
+    expect(fn (): mixed => $client->search('   '))
+        ->toThrow(InvalidArgumentException::class, 'The search query cannot be empty.');
+});
+
+it('fetches popular subreddit listings for the requested sort', function (): void {
+    $httpClient = new RecordingHttpClient(
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalPostListingPayload(), JSON_THROW_ON_ERROR)),
+    );
+    $client = new RedditClient(
+        $httpClient,
+        new Psr17Factory(),
+        null,
+        new RedditClientConfig(userAgent: 'test-agent'),
+    );
+
+    $listing = $client->getPopular(SortType::Top, new PaginationOptions(limit: 5));
+
+    expect($listing->children)->toHaveCount(1)
+        ->and((string) $httpClient->lastRequest?->getUri())
+            ->toBe('https://www.reddit.com/r/popular/top.json?limit=5');
+});
+
+it('fetches r all listings for the requested sort', function (): void {
+    $httpClient = new RecordingHttpClient(
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalPostListingPayload(), JSON_THROW_ON_ERROR)),
+    );
+    $client = new RedditClient(
+        $httpClient,
+        new Psr17Factory(),
+        null,
+        new RedditClientConfig(userAgent: 'test-agent'),
+    );
+
+    $client->getAll(SortType::New, new PaginationOptions(limit: 10));
+
+    expect((string) $httpClient->lastRequest?->getUri())
+        ->toBe('https://www.reddit.com/r/all/new.json?limit=10');
+});
+
+it('fetches multireddit listings with encoded path segments', function (): void {
+    $httpClient = new RecordingHttpClient(
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalPostListingPayload(), JSON_THROW_ON_ERROR)),
+    );
+    $client = new RedditClient(
+        $httpClient,
+        new Psr17Factory(),
+        null,
+        new RedditClientConfig(userAgent: 'test-agent'),
+    );
+
+    $client->getMultireddit('u/angel test', 'm/php dev', new PaginationOptions(limit: 10));
+
+    expect((string) $httpClient->lastRequest?->getUri())
+        ->toBe('https://www.reddit.com/user/angel%20test/m/php%20dev.json?limit=10');
+});
+
+it('rejects empty multireddit names', function (): void {
+    $httpClient = new RecordingHttpClient(
+        new Response(200, ['Content-Type' => 'application/json'], json_encode(clientMinimalPostListingPayload(), JSON_THROW_ON_ERROR)),
+    );
+    $client = new RedditClient(
+        $httpClient,
+        new Psr17Factory(),
+        null,
+        new RedditClientConfig(userAgent: 'test-agent'),
+    );
+
+    expect(fn (): mixed => $client->getMultireddit('angel', '   '))
+        ->toThrow(InvalidArgumentException::class, 'The multireddit name cannot be empty.');
+});
+
 /**
  * @return array<string, mixed>
  */
@@ -474,6 +602,56 @@ function clientMinimalUserContentListingPayload(): array
             'children' => [
                 clientMinimalPostThingPayload(),
                 clientMinimalCommentThingPayload(),
+            ],
+            'after' => null,
+            'before' => null,
+        ],
+    ];
+}
+
+/**
+ * @return array<string, mixed>
+ */
+function clientMinimalUserSummaryPayload(): array
+{
+    return [
+        'kind' => 't2',
+        'data' => [
+            'id' => 'user-1',
+            'name' => 'angel',
+            'created' => 1_600_000_000,
+            'created_utc' => 1_600_000_000,
+            'icon_img' => 'https://example.com/avatar.png',
+            'is_employee' => false,
+            'is_friend' => false,
+            'is_gold' => false,
+            'is_mod' => false,
+            'verified' => true,
+            'hide_from_robots' => false,
+            'link_karma' => 100,
+            'comment_karma' => 50,
+            'is_blocked' => false,
+            'has_subscribed' => true,
+            'subreddit' => clientMinimalUserProfileSubredditPayload(),
+        ],
+    ];
+}
+
+/**
+ * @return array<string, mixed>
+ */
+function clientMinimalSearchResultsPayload(): array
+{
+    return [
+        'kind' => 'Listing',
+        'data' => [
+            'modhash' => null,
+            'dist' => 4,
+            'children' => [
+                clientMinimalPostThingPayload(),
+                clientMinimalCommentThingPayload(),
+                clientMinimalSubredditPayload(),
+                clientMinimalUserSummaryPayload(),
             ],
             'after' => null,
             'before' => null,

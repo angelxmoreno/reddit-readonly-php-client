@@ -8,13 +8,16 @@ use Amoreno\RedditClient\Cache\CacheLayer;
 use Amoreno\RedditClient\Config\CommentOptions;
 use Amoreno\RedditClient\Config\PaginationOptions;
 use Amoreno\RedditClient\Config\RedditClientConfig;
+use Amoreno\RedditClient\Config\SearchOptions;
 use Amoreno\RedditClient\Dto\Comment\CommentListing;
 use Amoreno\RedditClient\Dto\Post\Post;
 use Amoreno\RedditClient\Dto\Post\PostListing;
 use Amoreno\RedditClient\Dto\Post\PostWithComments;
 use Amoreno\RedditClient\Dto\Subreddit\Subreddit;
+use Amoreno\RedditClient\Dto\User\SearchResults;
 use Amoreno\RedditClient\Dto\User\UserContentListing;
 use Amoreno\RedditClient\Dto\User\UserProfile;
+use Amoreno\RedditClient\Enum\SortType;
 use Amoreno\RedditClient\Enum\TopTimeRange;
 use Amoreno\RedditClient\Http\RedditTransport;
 use Amoreno\RedditClient\Mapping\RedditPayloadMapper;
@@ -170,6 +173,60 @@ final readonly class RedditClient
         return $profile;
     }
 
+    public function search(string $query, ?SearchOptions $options = null): SearchResults
+    {
+        return $this->fetchSearchResults($query, '/search.json', $options);
+    }
+
+    public function searchSubreddit(string $subreddit, string $query, ?SearchOptions $options = null): SearchResults
+    {
+        $normalizedSubreddit = $this->normalizeSubredditName($subreddit);
+        $encodedSubreddit = rawurlencode($normalizedSubreddit);
+
+        return $this->fetchSearchResults(
+            $query,
+            sprintf('/r/%s/search.json', $encodedSubreddit),
+            $options,
+            ['restrict_sr' => '1'],
+        );
+    }
+
+    public function getPopular(SortType $sort = SortType::Hot, ?PaginationOptions $options = null): PostListing
+    {
+        return $this->fetchSubredditListing('popular', $sort->value, $options);
+    }
+
+    public function getAll(SortType $sort = SortType::Hot, ?PaginationOptions $options = null): PostListing
+    {
+        return $this->fetchSubredditListing('all', $sort->value, $options);
+    }
+
+    public function getMultireddit(string $user, string $multiName, ?PaginationOptions $options = null): PostListing
+    {
+        $normalizedUsername = $this->normalizeUsername($user);
+        $normalizedMultiName = $this->normalizeMultiredditName($multiName);
+        $encodedUsername = rawurlencode($normalizedUsername);
+        $encodedMultiName = rawurlencode($normalizedMultiName);
+        $query = $this->buildPaginationQuery($options);
+        $path = sprintf('/user/%s/m/%s.json', $encodedUsername, $encodedMultiName);
+        $cacheKey = $this->buildCacheKey($path, $query);
+
+        $cached = $this->cache->get($cacheKey);
+
+        if ($cached instanceof PostListing) {
+            return $cached;
+        }
+
+        $this->rateLimiter->waitForToken();
+
+        $payload = $this->transport->get($this->buildUrl($path, $query));
+        $listing = $this->mapper->mapPostListing($this->expectAssociativePayload($payload));
+
+        $this->cache->set($cacheKey, $listing);
+
+        return $listing;
+    }
+
     private function fetchSubredditListing(
         string $subreddit,
         string $sort,
@@ -264,6 +321,33 @@ final readonly class RedditClient
     }
 
     /**
+     * @param array<string, scalar> $extraQuery
+     */
+    private function fetchSearchResults(
+        string $query,
+        string $path,
+        ?SearchOptions $options = null,
+        array $extraQuery = [],
+    ): SearchResults {
+        $searchQuery = $this->buildSearchQuery($query, $options, $extraQuery);
+        $cacheKey = $this->buildCacheKey($path, $searchQuery);
+        $cached = $this->cache->get($cacheKey);
+
+        if ($cached instanceof SearchResults) {
+            return $cached;
+        }
+
+        $this->rateLimiter->waitForToken();
+
+        $payload = $this->transport->get($this->buildUrl($path, $searchQuery));
+        $results = $this->mapper->mapSearchResults($this->expectAssociativePayload($payload));
+
+        $this->cache->set($cacheKey, $results);
+
+        return $results;
+    }
+
+    /**
      * @return array<string, scalar>
      */
     private function buildListingQuery(?PaginationOptions $options, ?TopTimeRange $timeRange = null): array
@@ -329,6 +413,37 @@ final readonly class RedditClient
         $query['sort'] = $options->sort->value;
 
         return $query;
+    }
+
+    /**
+     * @param array<string, scalar> $extraQuery
+     *
+     * @return array<string, scalar>
+     */
+    private function buildSearchQuery(string $query, ?SearchOptions $options, array $extraQuery = []): array
+    {
+        $options ??= new SearchOptions();
+        $normalizedQuery = $this->normalizeSearchQuery($query);
+
+        $parameters = ['q' => $normalizedQuery];
+
+        foreach ($extraQuery as $key => $value) {
+            $parameters[$key] = $value;
+        }
+
+        if ($options->after !== null) {
+            $parameters['after'] = $options->after;
+        }
+
+        if ($options->before !== null) {
+            $parameters['before'] = $options->before;
+        }
+
+        $parameters['limit'] = $options->limit;
+        $parameters['sort'] = $options->sort->value;
+        $parameters['t'] = $options->timeRange->value;
+
+        return $parameters;
     }
 
     /**
@@ -399,6 +514,33 @@ final readonly class RedditClient
 
         if ($normalized === '') {
             throw new InvalidArgumentException('The post ID cannot be empty.');
+        }
+
+        return $normalized;
+    }
+
+    private function normalizeMultiredditName(string $multiName): string
+    {
+        $normalized = trim($multiName);
+        $normalized = trim($normalized, '/');
+
+        if (str_starts_with($normalized, 'm/')) {
+            $normalized = substr($normalized, 2);
+        }
+
+        if ($normalized === '') {
+            throw new InvalidArgumentException('The multireddit name cannot be empty.');
+        }
+
+        return $normalized;
+    }
+
+    private function normalizeSearchQuery(string $query): string
+    {
+        $normalized = trim($query);
+
+        if ($normalized === '') {
+            throw new InvalidArgumentException('The search query cannot be empty.');
         }
 
         return $normalized;

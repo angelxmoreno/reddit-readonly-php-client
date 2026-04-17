@@ -57,3 +57,31 @@ it('autoloads the exception hierarchy', function (): void {
         ->and(new RateLimitError('rate-limit'))->toBeInstanceOf(RateLimitError::class)
         ->and(new CacheError('cache'))->toBeInstanceOf(CacheError::class);
 });
+
+it('exposes the expected public client methods', function (): void {
+    $methods = array_values(array_filter(
+        get_class_methods(RedditClient::class),
+        static fn (string $method): bool => $method !== '__construct',
+    ));
+    sort($methods);
+
+    expect($methods)->toBe([
+        'getAll',
+        'getComments',
+        'getHotSubredditPosts',
+        'getMultireddit',
+        'getNewSubredditPosts',
+        'getPopular',
+        'getPost',
+        'getRisingSubredditPosts',
+        'getSubredditDetails',
+        'getSubredditPosts',
+        'getTopSubredditPosts',
+        'getUserComments',
+        'getUserOverview',
+        'getUserProfile',
+        'getUserSubmitted',
+        'search',
+        'searchSubreddit',
+    ]);
+});

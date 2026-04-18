@@ -1,0 +1,74 @@
+# Reddit Read-Only PHP Client (Full)
+> A lightweight, PSR-native PHP client for Reddit's public JSON API.
+
+This file provides a comprehensive map of the entire codebase, including internal implementation details, for AI agents that require deep grounding in the project's architecture.
+
+## Documentation
+- [README.md](README.md): Primary user documentation.
+- [AGENTS.md](AGENTS.md): Contributor guidelines and architecture map.
+- [llms.txt](llms.txt): Concise AI-friendly overview.
+
+## Core Client Layer
+- [RedditClient](src/Client/RedditClient.php): Main entry point. Orchestrates transport, mapping, rate limiting, and caching.
+- [RedditClientConfig](src/Config/RedditClientConfig.php): Configuration DTO for the client.
+
+## HTTP & Transport Layer
+- [RedditTransport](src/Http/RedditTransport.php): Wrapper around PSR-18 `ClientInterface`. Handles GET requests and error status code translation.
+- [RedditTransportTest](tests/Unit/Http/RedditTransportTest.php): Tests for the transport layer.
+
+## Payload Mapping & Validation
+- [RedditPayloadMapper](src/Mapping/RedditPayloadMapper.php): The core of the response processing. Uses `Cuyz\Valinor\MapperBuilder` to map raw JSON arrays to typed DTOs.
+- [RedditPayloadMapperTest](tests/Unit/Mapping/RedditPayloadMapperTest.php): Extensive mapping tests.
+
+## Rate Limiting
+- [TokenBucketRateLimiter](src/RateLimit/TokenBucketRateLimiter.php): Implements the token bucket algorithm. Features a `waitForToken()` method that handles sleep-based blocking.
+- [TokenBucketRateLimiterTest](tests/Unit/RateLimit/TokenBucketRateLimiterTest.php): Validation of capacity and refill rates.
+
+## Caching
+- [CacheLayer](src/Cache/CacheLayer.php): Wrapper for PSR-16 `CacheInterface`. Handles deterministic key generation (`get:{path}?{query}`) and TTL.
+- [CacheLayerTest](tests/Unit/Cache/CacheLayerTest.php): Cache hit/miss and TTL tests.
+
+## Data Models (DTOs)
+
+### Subreddits
+- [Subreddit](src/Dto/Subreddit/Subreddit.php): Subreddit details (name, title, description, subscribers, etc.).
+
+### Posts
+- [Post](src/Dto/Post/Post.php): Post model with attributes like `title`, `author`, `score`, `num_comments`, `selftext`.
+- [PostListing](src/Dto/Post/PostListing.php): Wrapper for a list of posts with pagination metadata (`after`, `before`).
+- [PostWithComments](src/Dto/Post/PostWithComments.php): Container for a single Post and its associated CommentListing.
+
+### Comments
+- [Comment](src/Dto/Comment/Comment.php): Recursive comment model supporting nested replies.
+- [CommentListing](src/Dto/Comment/CommentListing.php): Paginated list of comments.
+- [MoreComments](src/Dto/Comment/MoreComments.php): Represents the "load more" placeholders in Reddit comment threads.
+
+### Users
+- [UserProfile](src/Dto/User/UserProfile.php): User metadata including karma, creation date, and linked subreddit.
+- [UserSummary](src/Dto/User/UserSummary.php): Minimal user representation.
+- [UserContentListing](src/Dto/User/UserContentListing.php): Polymorphic listing that can contain both Posts and Comments.
+- [SearchResults](src/Dto/User/SearchResults.php): Paginated results for subreddit or global searches.
+
+### Common
+- [Flair](src/Dto/Common/Flair.php): Text and CSS class data for Reddit flairs.
+
+## Enums
+- [SortType](src/Enum/SortType.php): `hot`, `new`, `top`, `rising`.
+- [CommentSort](src/Enum/CommentSort.php): `confidence`, `top`, `new`, `controversial`, `old`, `random`, `qa`, `live`.
+- [SearchSort](src/Enum/SearchSort.php): `relevance`, `hot`, `top`, `new`, `comments`.
+- [TopTimeRange](src/Enum/TopTimeRange.php): `hour`, `day`, `week`, `month`, `year`, `all`.
+- [ThingKind](src/Enum/ThingKind.php): `t1` (Comment), `t3` (Link), `t5` (Subreddit), etc.
+
+## Exceptions
+- [RedditClientException](src/Exception/RedditClientException.php): Marker interface/base class.
+- [RedditApiError](src/Exception/RedditApiError.php): HTTP 4xx/5xx responses.
+- [RateLimitError](src/Exception/RateLimitError.php): Local or remote rate limit exhaustion.
+- [ValidationError](src/Exception/ValidationError.php): Mapping failures.
+- [NetworkError](src/Exception/NetworkError.php): Connectivity issues.
+- [CacheError](src/Exception/CacheError.php): Cache backend issues.
+
+## Testing Suite
+- [Pest Config](tests/Pest.php): Pest global configurations and expectations.
+- [TestCase](tests/TestCase.php): Base class for shared setup.
+- [RedditClientLiveTest](tests/Integration/RedditClientLiveTest.php): Integration tests using real API calls (requires `REDDIT_LIVE_TESTS=1`).
+- [StreamHttpClient](tests/Support/StreamHttpClient.php): Lightweight PSR-18 client used in tests.

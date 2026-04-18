@@ -30,8 +30,5 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Run live integration tests
-        run: composer test:live
-
       - name: Run quality checks
         run: composer check

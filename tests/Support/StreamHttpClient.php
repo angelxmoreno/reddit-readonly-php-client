@@ -30,10 +30,9 @@ final class StreamHttpClient implements ClientInterface
             );
         }
 
-        /** @var list<string> $responseHeaders */
-        $responseHeaders = $http_response_header;
+        $responseHeaders = http_get_last_response_headers();
 
-        if (!isset($responseHeaders[0])) {
+        if (!is_array($responseHeaders) || !isset($responseHeaders[0])) {
             throw new StreamClientException(
                 sprintf('Failed to read HTTP headers for "%s".', (string) $request->getUri()),
             );

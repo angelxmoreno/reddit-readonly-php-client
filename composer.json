@@ -55,6 +55,10 @@
             "@test",
             "@analyse",
             "@format:check"
+        ],
+        "test:live": [
+            "@putenv REDDIT_LIVE_TESTS=1",
+            "@test:integration"
         ]
     }
 }

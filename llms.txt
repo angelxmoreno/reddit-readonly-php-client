@@ -51,7 +51,7 @@ The `RedditClient` exposes the following public API:
 - [CommentOptions](src/Config/CommentOptions.php): Options for comment depth, limit, and sorting.
 - [SearchOptions](src/Config/SearchOptions.php): Search-specific parameters.
 - [SortType](src/Enum/SortType.php): Global sorting types (Hot, New, Top, Rising).
-- [CommentSort](src/Enum/CommentSort.php): Comment-specific sorting (Top, Best, Old, etc.).
+- [CommentSort](src/Enum/CommentSort.php): Comment-specific sorting (`confidence`, `top`, `new`, `controversial`, `old`, `qa`, `live`).
 - [SearchSort](src/Enum/SearchSort.php): Search-specific sorting.
 - [TopTimeRange](src/Enum/TopTimeRange.php): Time ranges for "Top" listings (Hour, Day, Week, Month, Year, All).
 - [ThingKind](src/Enum/ThingKind.php): Reddit "Thing" type prefixes.

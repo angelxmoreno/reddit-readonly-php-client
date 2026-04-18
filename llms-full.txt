@@ -1,7 +1,7 @@
 # Reddit Read-Only PHP Client (Full)
 > A lightweight, PSR-native PHP client for Reddit's public JSON API.
 
-This file provides a comprehensive map of the entire codebase, including internal implementation details, for AI agents that require deep grounding in the project's architecture.
+This file provides a high-signal map of the codebase, including major internal implementation details, for AI agents that require deeper grounding in the project's architecture.
 
 ## Documentation
 - [README.md](README.md): Primary user documentation.
@@ -60,7 +60,7 @@ This file provides a comprehensive map of the entire codebase, including interna
 - [ThingKind](src/Enum/ThingKind.php): `t1` (Comment), `t3` (Link), `t5` (Subreddit), etc.
 
 ## Exceptions
-- [RedditClientException](src/Exception/RedditClientException.php): Marker interface/base class.
+- [RedditClientException](src/Exception/RedditClientException.php): Abstract base exception for the library.
 - [RedditApiError](src/Exception/RedditApiError.php): HTTP 4xx/5xx responses.
 - [RateLimitError](src/Exception/RateLimitError.php): Local or remote rate limit exhaustion.
 - [ValidationError](src/Exception/ValidationError.php): Mapping failures.

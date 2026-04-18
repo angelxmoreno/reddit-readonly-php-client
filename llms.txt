@@ -1,0 +1,76 @@
+# Reddit Read-Only PHP Client
+> A lightweight, PSR-native PHP client for Reddit's public JSON API.
+
+This package provides a read-only interface to Reddit's public data, requiring no authentication. It strictly adheres to PSR standards for HTTP, caching, and request factories.
+
+## Documentation
+- [README.md](README.md): Installation, quickstart, and comprehensive public API overview.
+- [AGENTS.md](AGENTS.md): Project structure, coding standards, and development workflows.
+- [LICENSE](LICENSE): MIT License terms.
+
+## Core API
+- [RedditClient](src/Client/RedditClient.php): The primary entry point for all API operations.
+- [RedditClientConfig](src/Config/RedditClientConfig.php): Configuration for rate limiting, user agent, and caching.
+
+## Public Methods
+The `RedditClient` exposes the following public API:
+- `getSubredditPosts(string $name, ?PaginationOptions $options = null): PostListing`
+- `getHotSubredditPosts(string $name, ?PaginationOptions $options = null): PostListing`
+- `getNewSubredditPosts(string $name, ?PaginationOptions $options = null): PostListing`
+- `getTopSubredditPosts(string $name, TopTimeRange $timeRange = TopTimeRange::Day, ?PaginationOptions $options = null): PostListing`
+- `getRisingSubredditPosts(string $name, ?PaginationOptions $options = null): PostListing`
+- `getSubredditDetails(string $name): Subreddit`
+- `getPost(string $subreddit, string $postId, ?string $title = null): Post`
+- `getComments(string $subreddit, string $postId, ?string $title = null, ?CommentOptions $options = null): CommentListing`
+- `getUserOverview(string $username, ?PaginationOptions $options = null): UserContentListing`
+- `getUserSubmitted(string $username, ?PaginationOptions $options = null): UserContentListing`
+- `getUserComments(string $username, ?PaginationOptions $options = null): UserContentListing`
+- `getUserProfile(string $username): UserProfile`
+- `search(string $query, ?SearchOptions $options = null): SearchResults`
+- `searchSubreddit(string $subreddit, string $query, ?SearchOptions $options = null): SearchResults`
+- `getPopular(SortType $sort = SortType::Hot, ?PaginationOptions $options = null): PostListing`
+- `getAll(SortType $sort = SortType::Hot, ?PaginationOptions $options = null): PostListing`
+- `getMultireddit(string $user, string $multiName, ?PaginationOptions $options = null): PostListing`
+
+## Data Models (DTOs)
+- [Subreddit](src/Dto/Subreddit/Subreddit.php): Subreddit profile and metadata.
+- [Post](src/Dto/Post/Post.php): Post (Link/Self) model.
+- [PostListing](src/Dto/Post/PostListing.php): Paginated list of posts.
+- [PostWithComments](src/Dto/Post/PostWithComments.php): Combined post and comment listing.
+- [Comment](src/Dto/Comment/Comment.php): Single comment model.
+- [CommentListing](src/Dto/Comment/CommentListing.php): Paginated list of comments.
+- [MoreComments](src/Dto/Comment/MoreComments.php): Stub for "load more comments" tokens.
+- [UserProfile](src/Dto/User/UserProfile.php): Full user profile details.
+- [UserSummary](src/Dto/User/UserSummary.php): Basic user summary.
+- [UserContentListing](src/Dto/User/UserContentListing.php): Listing of user-submitted posts or comments.
+- [SearchResults](src/Dto/User/SearchResults.php): Results from a search query.
+- [Flair](src/Dto/Common/Flair.php): Post or user flair metadata.
+
+## Configuration & Enums
+- [PaginationOptions](src/Config/PaginationOptions.php): Options for 'before', 'after', 'limit', and 'count'.
+- [CommentOptions](src/Config/CommentOptions.php): Options for comment depth, limit, and sorting.
+- [SearchOptions](src/Config/SearchOptions.php): Search-specific parameters.
+- [SortType](src/Enum/SortType.php): Global sorting types (Hot, New, Top, Rising).
+- [CommentSort](src/Enum/CommentSort.php): Comment-specific sorting (`confidence`, `top`, `new`, `controversial`, `old`, `qa`, `live`).
+- [SearchSort](src/Enum/SearchSort.php): Search-specific sorting.
+- [TopTimeRange](src/Enum/TopTimeRange.php): Time ranges for "Top" listings (Hour, Day, Week, Month, Year, All).
+- [ThingKind](src/Enum/ThingKind.php): Reddit "Thing" type prefixes.
+
+## Internal Architecture
+- [RedditTransport](src/Http/RedditTransport.php): PSR-18 transport layer handling request execution.
+- [RedditPayloadMapper](src/Mapping/RedditPayloadMapper.php): Uses Valinor to map JSON responses to strongly-typed DTOs.
+- [TokenBucketRateLimiter](src/RateLimit/TokenBucketRateLimiter.php): Implementation of the token bucket algorithm for rate limiting.
+- [CacheLayer](src/Cache/CacheLayer.php): PSR-16 wrapper for deterministic response caching.
+
+## Exceptions
+- [RedditClientException](src/Exception/RedditClientException.php): Base exception for the library.
+- [RedditApiError](src/Exception/RedditApiError.php): Thrown when the Reddit API returns an error response.
+- [RateLimitError](src/Exception/RateLimitError.php): Thrown when rate limits are exceeded locally or remotely.
+- [ValidationError](src/Exception/ValidationError.php): Thrown when the API response fails DTO mapping or validation.
+- [NetworkError](src/Exception/NetworkError.php): Thrown for PSR-18 client or connectivity issues.
+- [CacheError](src/Exception/CacheError.php): Thrown for PSR-16 cache backend failures.
+
+## Development & Testing
+- [Tests](tests): Unit and integration tests using Pest PHP.
+- [Live Tests](tests/Integration/RedditClientLiveTest.php): Opt-in integration tests against the live Reddit API (`REDDIT_LIVE_TESTS=1`).
+- [Composer Scripts](composer.json): `test`, `analyse`, `format`, `check`, and `test:live`.

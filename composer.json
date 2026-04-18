@@ -56,6 +56,9 @@
             "@analyse",
             "@format:check"
         ],
-        "test:live": "REDDIT_LIVE_TESTS=1 composer test:integration"
+        "test:live": [
+            "@putenv REDDIT_LIVE_TESTS=1",
+            "@test:integration"
+        ]
     }
 }

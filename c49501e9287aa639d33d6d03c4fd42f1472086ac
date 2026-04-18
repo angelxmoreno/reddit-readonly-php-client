@@ -1,0 +1,38 @@
+llms.txt
+  344b56a67fbe9225 54
+llms-full.txt
+  344b56a67fbe9225 4,63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "c49501e9287aa639d33d6d03c4fd42f1472086ac",
+  "prompts": {
+    "344b56a67fbe9225": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019d6fe0-7791-7a63-9655-e0e18fc56fe6",
+        "model": "gpt-5.4"
+      },
+      "human_author": "Angel S. Moreno",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 3,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    },
+    "b265924cecb94f9b": {
+      "agent_id": {
+        "tool": "gemini",
+        "id": "558d1dc7-b1d1-4eb4-a682-bbe373144d9c",
+        "model": "gemini-2.5-flash"
+      },
+      "human_author": "Angel S. Moreno",
+      "messages": [],
+      "total_additions": 5,
+      "total_deletions": 0,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    }
+  }
+}
